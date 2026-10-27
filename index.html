@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Myanmar Cultural Heritage Museum</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #663300;
+            font-size: 26px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        img {
+            width: 300px;
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        button {
+            padding: 12px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 6px;
+            background-color: #795548;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background-color: #5d4037;
+        }
+
+        button.active {
+            background-color: #245c43;
+        }
+
+        #description {
+            font-size: 18px;
+            padding: 15px;
+            min-height: 70px;
+        }
+
+        .audio-section {
+            margin-top: 15px;
+        }
+
+        #audioStatus {
+            color: #555;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Myanmar Cultural Heritage Museum</h1>
+
+        <h2>Artifact 001 - Myanmar Hne</h2>
+
+        <img src="hne.jpg" alt="Myanmar Traditional Hne">
+
+        <h3>Select Language</h3>
+
+        <div>
+            <button data-lang="my" onclick="changeLanguage('my')">
+                Myanmar
+            </button>
+
+            <button data-lang="en" onclick="changeLanguage('en')">
+                English
+            </button>
+
+            <button data-lang="zh" onclick="changeLanguage('zh')">
+                Chinese
+            </button>
+
+            <button data-lang="ru" onclick="changeLanguage('ru')">
+                Russian
+            </button>
+        </div>
+
+        <p id="description"></p>
+
+        <div class="audio-section">
+
+            <h3>Audio Guide</h3>
+
+            <button onclick="speakText()">
+                🔊 Listen
+            </button>
+
+            <button onclick="stopText()">
+                ⏹ Stop
+            </button>
+
+            <p id="audioStatus">
+                Select a language and press Listen.
+            </p>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        // Artifact descriptions in four languages
+        const descriptions = {
+
+            my:
+                "နှဲသည် မြန်မာ့ရိုးရာ လေမှုတ်တူရိယာတစ်မျိုးဖြစ်ပါသည်။ " +
+                "မြန်မာ့ဆိုင်းဝိုင်းနှင့် ရိုးရာဂီတဖျော်ဖြေပွဲများတွင် " +
+                "အသုံးပြုကြသော တူရိယာတစ်မျိုးဖြစ်ပါသည်။",
+
+            en:
+                "The Hne is a traditional Myanmar double-reed " +
+                "wind instrument. " +
+                "It is commonly used in Myanmar traditional " +
+                "orchestras and cultural performances.",
+
+            zh:
+                "缅甸唢呐是一种传统的双簧管乐器，" +
+                "常用于缅甸传统乐队和文化表演。",
+
+            ru:
+                "Хнэ — традиционный мьянманский духовой " +
+                "инструмент с двойной тростью. " +
+                "Он используется в традиционных оркестрах " +
+                "и культурных представлениях."
+        };
+
+        // AI-generated MP3 audio files
+        const audioFiles = {
+            my: "hne_myanmar.mp3",
+            en: "hne_english.mp3",
+            zh: "hne_chinese.mp3",
+            ru: "hne_russian.mp3"
+        };
+
+        const languageCodes = {
+            my: "my",
+            en: "en",
+            zh: "zh",
+            ru: "ru"
+        };
+
+        let currentLanguage = "en";
+
+        const currentAudio = new Audio();
+
+        const audioStatus =
+            document.getElementById("audioStatus");
+
+        // Change language
+        function changeLanguage(lang) {
+
+            stopText();
+
+            currentLanguage = lang;
+
+            document.documentElement.lang =
+                languageCodes[lang];
+
+            document.getElementById("description")
+                .innerText = descriptions[lang];
+
+            document.querySelectorAll("[data-lang]")
+                .forEach(button => {
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.lang === lang
+                    );
+                });
+
+            audioStatus.innerText =
+                "Press Listen to play the audio guide.";
+        }
+
+        // Play selected MP3 audio
+        function speakText() {
+
+            stopText();
+
+            currentAudio.src =
+                audioFiles[currentLanguage];
+
+            audioStatus.innerText = "Playing audio...";
+
+            currentAudio.play().catch(error => {
+
+                console.error(
+                    "Audio playback error:",
+                    error
+                );
+
+                audioStatus.innerText =
+                    "Unable to play audio. Check the MP3 file.";
+            });
+        }
+
+        // Stop audio
+        function stopText() {
+
+            currentAudio.pause();
+
+            currentAudio.currentTime = 0;
+
+            audioStatus.innerText = "Audio stopped.";
+        }
+
+        // Audio playback completed
+        currentAudio.addEventListener("ended", () => {
+
+            audioStatus.innerText =
+                "Audio playback completed.";
+        });
+
+        // Default language
+        changeLanguage("en");
+
+    </script>
+
+</body>
+
+</html>
